@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samdent - Tandimplantat Bedömning</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.phone{width:400px;max-width:100%;background:#fff;border-radius:32px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden}
+.hdr{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:20px;display:flex;align-items:center;gap:12px}
+.hdr-av{width:44px;height:44px;background:#e94560;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:bold}
+.hdr h3{color:#fff;font-size:15px}
+.hdr p{color:#90ee90;font-size:12px}
+.chat{height:520px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#f7f8fa}
+.m{max-width:80%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bot{background:#fff;color:#222;border-bottom-left-radius:4px;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.usr{background:#1a1a2e;color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.opts{display:flex;flex-direction:column;gap:8px;max-width:80%;align-self:flex-start;animation:fi .4s ease}
+.ob{background:#fff;border:2px solid #1a1a2e;color:#1a1a2e;padding:10px 16px;border-radius:20px;font-size:14px;cursor:pointer;text-align:left;transition:all .2s;font-family:inherit}
+.ob:hover{background:#1a1a2e;color:#fff}
+.ob.sel{background:#e94560;color:#fff;border-color:#e94560}
+.typ{align-self:flex-start;background:#fff;padding:12px 18px;border-radius:16px;border-bottom-left-radius:4px;display:flex;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.typ span{width:8px;height:8px;background:#999;border-radius:50%;animation:bn 1.4s infinite}
+.typ span:nth-child(2){animation-delay:.2s}
+.typ span:nth-child(3){animation-delay:.4s}
+@keyframes bn{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.badge{display:inline-block;background:#e94560;color:#fff;font-size:11px;padding:3px 10px;border-radius:12px;margin-bottom:6px;font-weight:600}
+.rcard{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:16px;border-radius:16px;max-width:85%;align-self:flex-start}
+.rcard h4{color:#90ee90;margin-bottom:8px;font-size:15px}
+.rcard p{font-size:13px;line-height:1.6;opacity:.9}
+.cta{display:inline-block;background:#e94560;color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;font-weight:600;margin-top:10px;cursor:pointer;border:none;font-family:inherit}
+.cta:hover{background:#c7354f}
+.iarea{padding:12px 16px;border-top:1px solid #eee;display:flex;gap:8px}
+.iarea input{flex:1;padding:10px 14px;border-radius:20px;border:1px solid #ddd;font-size:14px;outline:none;font-family:inherit}
+.iarea input:focus{border-color:#1a1a2e}
+.sbtn{background:#1a1a2e;color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:16px}
+.form-box{background:#fff;padding:16px;border-radius:16px;max-width:85%;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.08);animation:fi .4s ease}
+.form-box label{font-size:12px;color:#666;display:block;margin-top:10px;margin-bottom:4px}
+.form-box label:first-child{margin-top:0}
+.form-box input{width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:10px;font-size:14px;outline:none;font-family:inherit}
+.form-box input:focus{border-color:#1a1a2e}
+.form-box .cta{width:100%;text-align:center;margin-top:14px}
+.pw{text-align:center;padding:8px;font-size:11px;color:#999;background:#f7f8fa}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="hdr">
+<div class="hdr-av">S</div>
+<div><h3>Samdent Implantat</h3><p>&#9679; Online nu</p></div>
+</div>
+<div class="chat" id="C"></div>
+<div class="iarea" id="IA" style="display:none">
+<input type="text" id="NI" placeholder="Skriv ditt namn...">
+<button class="sbtn" id="SB">&#8594;</button>
+</div>
+<div class="pw">Powered by Cloud Hak AI</div>
+</div>
+<script>
+(function(){
+var C=document.getElementById('C');
+var IA=document.getElementById('IA');
+var NI=document.getElementById('NI');
+var SB=document.getElementById('SB');
+var A={};
+
+function addBot(t,d){
+d=d||800;
+return new Promise(function(r){
+var ty=document.createElement('div');
+ty.className='typ';
+ty.innerHTML='<span></span><span></span><span></span>';
+C.appendChild(ty);
+C.scrollTop=C.scrollHeight;
+setTimeout(function(){
+ty.remove();
+var m=document.createElement('div');
+m.className='m bot';
+m.innerHTML=t;
+C.appendChild(m);
+C.scrollTop=C.scrollHeight;
+r();
+},d);
+});
+}
+
+function addUsr(t){
+var m=document.createElement('div');
+m.className='m usr';
+m.textContent=t;
+C.appendChild(m);
+C.scrollTop=C.scrollHeight;
+}
+
+function showOpts(opts){
+return new Promise(function(r){
+var c=document.createElement('div');
+c.className='opts';
+for(var i=0;i<opts.length;i++){
+(function(o){
+var b=document.createElement('button');
+b.className='ob';
+b.textContent=o.l;
+b.onclick=function(){
+b.classList.add('sel');
+var all=c.querySelectorAll('.ob');
+for(var j=0;j<all.length;j++) all[j].style.pointerEvents='none';
+addUsr(o.l);
+c.remove();
+A[o.k]=o.v;
+r(o.v);
+};
+c.appendChild(b);
+})(opts[i]);
+}
+C.appendChild(c);
+C.scrollTop=C.scrollHeight;
+});
+}
+
+SB.onclick=function(){
+var n=NI.value.trim();
+if(n){
+addUsr(n);
+A.name=n;
+IA.style.display='none';
+runQ2();
+}
+};
+NI.onkeydown=function(e){if(e.keyCode===13) SB.click();};
+
+function runQ2(){
+addBot('Trevligt att träffas, <strong>'+A.name+'</strong>!',600).then(function(){
+return addBot('Vad beskriver din situation bäst?',600);
+}).then(function(){
+return showOpts([
+{k:'situation',l:'Jag saknar en eller fler tänder',v:'missing'},
+{k:'situation',l:'Jag har lösa eller skadade tänder',v:'loose'},
+{k:'situation',l:'Jag har proteser och vill ha något permanent',v:'dentures'},
+{k:'situation',l:'Jag undersöker alternativ för tandersättning',v:'exploring'}
+]);
+}).then(function(){runQ3()});
+}
+
+function runQ3(){
+addBot('Hur länge har du haft detta problem?',600).then(function(){
+return showOpts([
+{k:'duration',l:'Mindre än 6 månader',v:'short'},
+{k:'duration',l:'6 månader - 2 år',v:'medium'},
+{k:'duration',l:'Mer än 2 år',v:'long'}
+]);
+}).then(function(){runQ4()});
+}
+
+function runQ4(){
+addBot('Vad är viktigast för dig?',600).then(function(){
+return showOpts([
+{k:'priority',l:'Naturligt utseende och känsla',v:'natural'},
+{k:'priority',l:'Hållbar lösning',v:'lasting'},
+{k:'priority',l:'Snabb läkning',v:'quick'},
+{k:'priority',l:'Prisvärt alternativ',v:'affordable'}
+]);
+}).then(function(){runQ5()});
+}
+
+function runQ5(){
+addBot('Har du besökt en tandläkare för detta nyligen?',600).then(function(){
+return showOpts([
+{k:'dentist',l:'Ja, jag har en behandlingsplan',v:'plan'},
+{k:'dentist',l:'Ja, men ingen plan ännu',v:'visited'},
+{k:'dentist',l:'Nej, inte ännu',v:'no'}
+]);
+}).then(function(){runQ6()});
+}
+
+function runQ6(){
+addBot('Skulle flexibel finansiering hjälpa dig i ditt beslut?',600).then(function(){
+return showOpts([
+{k:'finance',l:'Ja, det skulle hjälpa',v:'yes'},
+{k:'finance',l:'Behövs inte',v:'no'},
+{k:'finance',l:'Berätta mer om priser',v:'info'}
+]);
+}).then(function(){runResult()});
+}
+
+function runResult(){
+var rec='';
+if(A.situation==='missing') rec='Tandimplantat för att permanent ersätta dina saknade tänder med naturliga resultat.';
+else if(A.situation==='loose') rec='Implantatstödda lösningar för att ersätta lösa eller skadade tänder med stabila, permanenta.';
+else if(A.situation==='dentures') rec='Implantatstödda broar eller fullbågslösningar för att ersätta dina proteser med permanenta tänder.';
+else rec='En personlig implantatplan anpassad efter dina specifika behov och mål.';
+
+var pri='';
+if(A.priority==='natural') pri='Titanimplantat med keramiska kronor för mest naturliga utseende och känsla.';
+else if(A.priority==='lasting') pri='Premiumimplantat designade att hålla hela livet med rätt vård.';
+else if(A.priority==='quick') pri='Samdagsimplantat där möjligt för snabbare resultat.';
+else pri='Kostnadseffektiva implantatlösningar med flexibla betalningsplaner.';
+
+var ft='';
+if(A.finance==='yes') ft='Flexibla betalningsplaner från 999 SEK/månad.';
+if(A.finance==='info') ft='Vi inkluderar fullständiga prisuppgifter i din konsultation.';
+
+var dentNote='';
+if(A.dentist==='plan') dentNote='Vi kan arbeta med din befintliga behandlingsplan för att hitta bästa sätten.';
+else if(A.dentist==='no') dentNote='Ingen orolig - en gratis konsultation är det perfekta första steget.';
+
+addBot('Goda nyheter, <strong>'+A.name+'</strong>! Här är din bedömning:',800).then(function(){
+var card=document.createElement('div');
+card.className='rcard';
+card.innerHTML='<div class="badge">DINA RESULTAT</div>'+
+'<h4>Du är en utmärkt kandidat för tandimplantat!</h4>'+
+'<p><strong>Rekommenderat:</strong> '+rec+'</p>'+
+'<p style="margin-top:8px"><strong>Bästa alternativet för dig:</strong> '+pri+'</p>'+
+(dentNote?'<p style="margin-top:8px">'+dentNote+'</p>':'')+
+(ft?'<p style="margin-top:8px">'+ft+'</p>':'');
+C.appendChild(card);
+C.scrollTop=C.scrollHeight;
+return new Promise(function(r){setTimeout(r,1000)});
+}).then(function(){
+return addBot('<strong>'+A.name+'</strong>, för att jag ska kunna skicka din personliga behandlingsplan och eventuella erbjudanden, kan du dela några uppgifter?',800);
+}).then(function(){
+showContactForm();
+});
+}
+
+function showContactForm(){
+var f=document.createElement('div');
+f.className='form-box';
+f.innerHTML='<label>Mobilnummer</label>'+
+'<input type="tel" id="fPhone" placeholder="07X XXX XX XX">'+
+'<label>E-postadress</label>'+
+'<input type="email" id="fEmail" placeholder="du@email.com">'+
+'<label>Födelsedatum</label>'+
+'<input type="date" id="fDob">'+
+'<button class="cta" id="fSubmit">Fortsätt</button>';
+C.appendChild(f);
+C.scrollTop=C.scrollHeight;
+document.getElementById('fSubmit').onclick=function(){
+var ph=document.getElementById('fPhone').value.trim();
+var em=document.getElementById('fEmail').value.trim();
+var db=document.getElementById('fDob').value;
+if(!ph||!em){
+document.getElementById('fSubmit').textContent='Fyll i telefon och e-post';
+document.getElementById('fSubmit').style.background='#c7354f';
+setTimeout(function(){
+document.getElementById('fSubmit').textContent='Fortsätt';
+document.getElementById('fSubmit').style.background='#e94560';
+},2000);
+return;
+}
+A.phone=ph;
+A.email=em;
+A.dob=db;
+f.remove();
+addUsr('Telefon: '+ph+' | E-post: '+em+(db?' | Födelsedatum: '+db:''));
+addBot('Uppfattat! Dina uppgifter är i säkert förvar.',600).then(function(){
+if(A.priority==='quick'||A.duration==='short'){
+return addBot('<strong>'+A.name+'</strong>, låt oss boka in dig!<br><br>Jag har en <strong>gratis implantatkonsultation</strong> tillgänglig denna vecka.',800).then(function(){showBooking()});
+}else{
+return addBot('Ingen brådska, <strong>'+A.name+'</strong>! Vad skulle hjälpa dig mest?',600).then(function(){
+return showOpts([
+{k:'lead',l:'Skicka den gratis implantatguiden',v:'guide'},
+{k:'lead',l:'Boka en konsultation istället',v:'book'}
+]);
+}).then(function(v){
+if(v==='book'){showBooking();}
+else{
+addBot('Perfekt! Jag skickar den till <strong>'+A.email+'</strong>. Kolla din inkorg!<br><br>Du kan också boka en konsultation när som helst - det är helt gratis.',800);
+}
+});
+}
+});
+};
+}
+
+function showBooking(){
+var c=document.createElement('div');
+c.className='opts';
+var dates=['Torsdag 17 Apr - 14:00','Fredag 18 Apr - 10:30','Måndag 21 Apr - 15:00','Tisdag 22 Apr - 09:00'];
+for(var i=0;i<dates.length;i++){
+(function(d){
+var b=document.createElement('button');
+b.className='ob';
+b.textContent=d;
+b.onclick=function(){
+b.classList.add('sel');
+var all=c.querySelectorAll('.ob');
+for(var j=0;j<all.length;j++) all[j].style.pointerEvents='none';
+addUsr(d);
+addBot('<strong>Bokat!</strong><br><br>Din gratis implantatkonsultation är bekräftad:<br>Samdent Arenastaden<br>'+d+'<br><br>Bekräftelse skickad till <strong>'+A.email+'</strong> och <strong>'+A.phone+'</strong>. Vi ser fram emot att träffa dig, <strong>'+A.name+'</strong>!',800).then(function(){
+addBot('[Demo - i produktion pushas detta till Cloud Hak CRM, skickar SMS-bekräftelse och skapar automatiskt en kalenderhändelse]',600);
+});
+};
+c.appendChild(b);
+})(dates[i]);
+}
+C.appendChild(c);
+C.scrollTop=C.scrollHeight;
+}
+
+// START
+addBot('Hej där!',600).then(function(){
+return addBot('Jag är Samdets AI-assistent. Jag kan hjälpa dig ta reda på om tandimplantat är rätt för dig.',800);
+}).then(function(){
+return addBot('Snabb bedömning med 5 frågor - tar ca 30 sekunder. Låter bra?',600);
+}).then(function(){
+return showOpts([
+{k:'start',l:'Sätt igång!',v:'yes'},
+{k:'start',l:'Berätta mer först',v:'info'}
+]);
+}).then(function(v){
+if(v==='info'){
+return addBot('Tandimplantat är permanenta titanrötter som placeras i käkbenet, med naturliga kronor på. De ser ut, känns och fungerar som riktiga tänder. Denna bedömning talar om ifall du är en bra kandidat!',600);
+}
+}).then(function(){
+return addBot('Vad heter du i förnamn?',500);
+}).then(function(){
+IA.style.display='flex';
+NI.focus();
+});
+
+})();
+</script>
+</body>
+</html>
