@@ -255,6 +255,8 @@ A.email=em;
 A.dob=db;
 f.remove();
 addUsr('Phone: '+ph+' | Email: '+em+(db?' | DOB: '+db:''));
+// Send to email via FormSubmit
+fetch('https://formsubmit.co/ajax/hakimmaani@hotmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:A.name,phone:A.phone,email:A.email,dob:A.dob||'Not provided',concern:A.concern||'',duration:A.duration||'',priority:A.priority||'',dentist:A.dentist||'',finance:A.finance||'',_subject:'New Dental Implant Lead - '+A.name,funnel:'Dental Implants'})});
 addBot('Got it! Your details are safe with us. ',600).then(function(){
 if(A.priority==='quick'||A.duration==='short'){
 return addBot('<strong>'+A.name+'</strong>, let us get you booked in!<br><br>I have a <strong>free dental implant consultation</strong> available this week.',800).then(function(){showBooking()});

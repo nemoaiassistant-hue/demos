@@ -255,6 +255,8 @@ A.email=em;
 A.dob=db;
 f.remove();
 addUsr('Telefon: '+ph+' | E-post: '+em+(db?' | Födelsedatum: '+db:''));
+// Skicka via FormSubmit
+fetch('https://formsubmit.co/ajax/hakimmaani@hotmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:A.name,phone:A.phone,email:A.email,dob:A.dob||'Ej angivet',concern:A.concern||'',duration:A.duration||'',priority:A.priority||'',dentist:A.dentist||'',finance:A.finance||'',_subject:'Ny Tandimplantat Lead - '+A.name,funnel:'Tandimplantat'})});
 addBot('Uppfattat! Dina uppgifter är i säkert förvar.',600).then(function(){
 if(A.priority==='quick'||A.duration==='short'){
 return addBot('<strong>'+A.name+'</strong>, låt oss boka in dig!<br><br>Jag har en <strong>gratis implantatkonsultation</strong> tillgänglig denna vecka.',800).then(function(){showBooking()});
