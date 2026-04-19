@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samdent - Invisalign Assessment</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.phone{width:400px;max-width:100%;background:#fff;border-radius:32px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden}
+.hdr{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:20px;display:flex;align-items:center;gap:12px}
+.hdr-av{width:44px;height:44px;background:#e94560;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:bold}
+.hdr h3{color:#fff;font-size:15px}
+.hdr p{color:#90ee90;font-size:12px}
+.chat{height:520px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#f7f8fa}
+.m{max-width:80%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bot{background:#fff;color:#222;border-bottom-left-radius:4px;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.usr{background:#1a1a2e;color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.opts{display:flex;flex-direction:column;gap:8px;max-width:80%;align-self:flex-start;animation:fi .4s ease}
+.ob{background:#fff;border:2px solid #1a1a2e;color:#1a1a2e;padding:10px 16px;border-radius:20px;font-size:14px;cursor:pointer;text-align:left;transition:all .2s;font-family:inherit}
+.ob:hover{background:#1a1a2e;color:#fff}
+.ob.sel{background:#e94560;color:#fff;border-color:#e94560}
+.typ{align-self:flex-start;background:#fff;padding:12px 18px;border-radius:16px;border-bottom-left-radius:4px;display:flex;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.typ span{width:8px;height:8px;background:#999;border-radius:50%;animation:bn 1.4s infinite}
+.typ span:nth-child(2){animation-delay:.2s}
+.typ span:nth-child(3){animation-delay:.4s}
+@keyframes bn{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.badge{display:inline-block;background:#e94560;color:#fff;font-size:11px;padding:3px 10px;border-radius:12px;margin-bottom:6px;font-weight:600}
+.rcard{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:16px;border-radius:16px;max-width:85%;align-self:flex-start}
+.rcard h4{color:#90ee90;margin-bottom:8px;font-size:15px}
+.rcard p{font-size:13px;line-height:1.6;opacity:.9}
+.cta{display:inline-block;background:#e94560;color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;font-weight:600;margin-top:10px;cursor:pointer;border:none;font-family:inherit}
+.cta:hover{background:#c7354f}
+.iarea{padding:12px 16px;border-top:1px solid #eee;display:flex;gap:8px}
+.iarea input{flex:1;padding:10px 14px;border-radius:20px;border:1px solid #ddd;font-size:14px;outline:none;font-family:inherit}
+.iarea input:focus{border-color:#1a1a2e}
+.sbtn{background:#1a1a2e;color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:16px}
+.form-box{background:#fff;padding:16px;border-radius:16px;max-width:85%;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.08);animation:fi .4s ease}
+.form-box label{font-size:12px;color:#666;display:block;margin-top:10px;margin-bottom:4px}
+.form-box label:first-child{margin-top:0}
+.form-box input{width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:10px;font-size:14px;outline:none;font-family:inherit}
+.form-box input:focus{border-color:#1a1a2e}
+.form-box .cta{width:100%;text-align:center;margin-top:14px}
+.pw{text-align:center;padding:8px;font-size:11px;color:#999;background:#f7f8fa}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="hdr">
+<div class="hdr-av">S</div>
+<div><h3>Samdent Invisalign</h3><p>&#9679; Online now</p></div>
+</div>
+<div class="chat" id="C"></div>
+<div class="iarea" id="IA" style="display:none">
+<input type="text" id="NI" placeholder="Type your name...">
+<button class="sbtn" id="SB">&#8594;</button>
+</div>
+<div class="pw">Powered by Cloud Hak AI</div>
+</div>
+<script>
+(function(){
+var C=document.getElementById('C');
+var IA=document.getElementById('IA');
+var NI=document.getElementById('NI');
+var SB=document.getElementById('SB');
+var A={};
+
+function addBot(t,d){
+d=d||800;
+return new Promise(function(r){
+var ty=document.createElement('div');
+ty.className='typ';
+ty.innerHTML='<span></span><span></span><span></span>';
+C.appendChild(ty);
+C.scrollTop=C.scrollHeight;
+setTimeout(function(){
+ty.remove();
+var m=document.createElement('div');
+m.className='m bot';
+m.innerHTML=t;
+C.appendChild(m);
+C.scrollTop=C.scrollHeight;
+r();
+},d);
+});
+}
+
+function addUsr(t){
+var m=document.createElement('div');
+m.className='m usr';
+m.textContent=t;
+C.appendChild(m);
+C.scrollTop=C.scrollHeight;
+}
+
+function showOpts(opts){
+return new Promise(function(r){
+var c=document.createElement('div');
+c.className='opts';
+for(var i=0;i<opts.length;i++){
+(function(o){
+var b=document.createElement('button');
+b.className='ob';
+b.textContent=o.l;
+b.onclick=function(){
+b.classList.add('sel');
+var all=c.querySelectorAll('.ob');
+for(var j=0;j<all.length;j++) all[j].style.pointerEvents='none';
+addUsr(o.l);
+c.remove();
+A[o.k]=o.v;
+r(o.v);
+};
+c.appendChild(b);
+})(opts[i]);
+}
+C.appendChild(c);
+C.scrollTop=C.scrollHeight;
+});
+}
+
+SB.onclick=function(){
+var n=NI.value.trim();
+if(n){
+addUsr(n);
+A.name=n;
+IA.style.display='none';
+runQ2();
+}
+};
+NI.onkeydown=function(e){if(e.keyCode===13) SB.click();};
+
+function runQ2(){
+addBot('Nice to meet you, <strong>'+A.name+'</strong>!',600).then(function(){
+return addBot('What bothers you most about your teeth?',600);
+}).then(function(){
+return showOpts([
+{k:'concern',l:'Crowding / crooked teeth',v:'crowding'},
+{k:'concern',l:'Gaps between teeth',v:'gaps'},
+{k:'concern',l:'Bite issues (over/underbite)',v:'bite'},
+{k:'concern',l:'General straightening',v:'general'}
+]);
+}).then(function(){runQ3()});
+}
+
+function runQ3(){
+addBot('Got it. Have you had braces or orthodontic treatment before?',600).then(function(){
+return showOpts([
+{k:'prev',l:'Yes, in the past',v:'yes'},
+{k:'prev',l:'No, never',v:'no'}
+]);
+}).then(function(){runQ4()});
+}
+
+function runQ4(){
+addBot('How soon are you looking to start treatment?',600).then(function(){
+return showOpts([
+{k:'timeline',l:'Right away - ready to go!',v:'immediate'},
+{k:'timeline',l:'Within 1-3 months',v:'soon'},
+{k:'timeline',l:'Just exploring options',v:'exploring'}
+]);
+}).then(function(){runQ5()});
+}
+
+function runQ5(){
+addBot('Last question! Would flexible financing help with your decision?',600).then(function(){
+return showOpts([
+{k:'finance',l:'Yes, that would help',v:'yes'},
+{k:'finance',l:'Not needed',v:'no'},
+{k:'finance',l:'Tell me more about pricing',v:'info'}
+]);
+}).then(function(){runResult()});
+}
+
+function runResult(){
+var isHot=A.timeline==='immediate';
+var isWarm=A.timeline==='soon';
+var tr='';
+if(A.concern==='crowding') tr='Invisalign aligners to gradually correct crowding';
+else if(A.concern==='gaps') tr='Invisalign to close gaps and align your smile';
+else if(A.concern==='bite') tr='Invisalign can address many bite issues - a consultation will confirm';
+else tr='Invisalign for a beautifully aligned smile';
+
+var tm=A.prev==='yes'?'Since you have had treatment before, you may see results even faster - often 3-6 months.':'Most patients see results in 6-12 months.';
+var ft='';
+if(A.finance==='yes') ft='Flexible payment plans available from 999 SEK/month.';
+if(A.finance==='info') ft='We will include full pricing details in your consultation.';
+
+addBot('Great news, <strong>'+A.name+'</strong>! Here is your assessment:',800).then(function(){
+var card=document.createElement('div');
+card.className='rcard';
+card.innerHTML='<div class="badge">YOUR RESULTS</div><h4>You are a great candidate for Invisalign!</h4><p><strong>Recommended:</strong> '+tr+'</p><p style="margin-top:8px"><strong>Timeline:</strong> '+tm+'</p>'+(ft?'<p style="margin-top:8px">'+ft+'</p>':'');
+C.appendChild(card);
+C.scrollTop=C.scrollHeight;
+return new Promise(function(r){setTimeout(r,1000)});
+}).then(function(){
+return addBot('<strong>'+A.name+'</strong>, so I can send you your personalised treatment plan and any available offers, could you share a few details?',800);
+}).then(function(){
+showContactForm();
+});
+}
+
+function showContactForm(){
+var f=document.createElement('div');
+f.className='form-box';
+f.innerHTML='<label>Mobile number</label>'+
+'<input type="tel" id="fPhone" placeholder="07X XXX XXXX">'+
+'<label>Email address</label>'+
+'<input type="email" id="fEmail" placeholder="you@email.com">'+
+'<label>Date of birth</label>'+
+'<input type="date" id="fDob">'+
+'<button class="cta" id="fSubmit">Continue</button>';
+C.appendChild(f);
+C.scrollTop=C.scrollHeight;
+document.getElementById('fSubmit').onclick=function(){
+var ph=document.getElementById('fPhone').value.trim();
+var em=document.getElementById('fEmail').value.trim();
+var db=document.getElementById('fDob').value;
+if(!ph||!em){
+document.getElementById('fSubmit').textContent='Please fill in phone and email';
+document.getElementById('fSubmit').style.background='#c7354f';
+setTimeout(function(){
+document.getElementById('fSubmit').textContent='Continue';
+document.getElementById('fSubmit').style.background='#e94560';
+},2000);
+return;
+}
+A.phone=ph;
+A.email=em;
+A.dob=db;
+f.remove();
+addUsr('Phone: '+ph+' | Email: '+em+(db?' | DOB: '+db:''));
+addBot('Got it! Your details are safe with us. ',600).then(function(){
+if(A.timeline==='immediate'||A.timeline==='soon'){
+return addBot('<strong>'+A.name+'</strong>, let us get you booked in!<br><br>I have a <strong>free Invisalign consultation</strong> available this week.',800).then(function(){showBooking()});
+}else{
+return addBot('No rush, <strong>'+A.name+'</strong>! What would help you most?',600).then(function(){
+return showOpts([
+{k:'lead',l:'Send me the free Invisalign guide',v:'guide'},
+{k:'lead',l:'Actually, book a consultation',v:'book'}
+]);
+}).then(function(v){
+if(v==='book'){showBooking();}
+else{
+addBot('Perfect! I will send it right over to <strong>'+A.email+'</strong>. Check your inbox!<br><br>In the meantime, feel free to book a consultation anytime - it is completely free.',800);
+}
+});
+}
+});
+};
+}
+
+function showBooking(){
+var c=document.createElement('div');
+c.className='opts';
+var dates=['Thursday 17 Apr - 14:00','Friday 18 Apr - 10:30','Monday 21 Apr - 15:00','Tuesday 22 Apr - 09:00'];
+for(var i=0;i<dates.length;i++){
+(function(d){
+var b=document.createElement('button');
+b.className='ob';
+b.textContent=d;
+b.onclick=function(){
+b.classList.add('sel');
+var all=c.querySelectorAll('.ob');
+for(var j=0;j<all.length;j++) all[j].style.pointerEvents='none';
+addUsr(d);
+addBot('<strong>Booked!</strong><br><br>Your free Invisalign consultation is confirmed:<br>Samdent Arenastaden<br>'+d+'<br><br>Confirmation sent to <strong>'+A.email+'</strong> and <strong>'+A.phone+'</strong>. Looking forward to seeing you, <strong>'+A.name+'</strong>!',800).then(function(){
+addBot('[Demo - in production this pushes to Cloud Hak CRM, sends SMS confirmation, and creates a calendar event automatically]',600);
+});
+};
+c.appendChild(b);
+})(dates[i]);
+}
+C.appendChild(c);
+C.scrollTop=C.scrollHeight;
+}
+
+// START
+addBot('Hi there!',600).then(function(){
+return addBot('I am Samdent AI assistant. I can help you find out if Invisalign is right for you.',800);
+}).then(function(){
+return addBot('Quick 5-question assessment - takes about 30 seconds. Sound good?',600);
+}).then(function(){
+return showOpts([
+{k:'start',l:'Let us do it!',v:'yes'},
+{k:'start',l:'Tell me more first',v:'info'}
+]);
+}).then(function(v){
+if(v==='info'){
+return addBot('Invisalign uses clear, removable aligners to straighten your teeth - virtually invisible. Most patients see results in 6-12 months. This assessment tells you if you are a good candidate!',600);
+}
+}).then(function(){
+return addBot('What is your first name?',500);
+}).then(function(){
+IA.style.display='flex';
+NI.focus();
+});
+
+})();
+</script>
+</body>
+</html>
